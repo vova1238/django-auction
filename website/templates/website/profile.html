@@ -1,0 +1,64 @@
+{% extends 'website/main.html' %}
+{% load static %}
+
+{% block content %}
+
+<img src="{{user_profile.profile_pic.url}}" alt="" style="width:150px;">
+<ul>
+<li>{{user_profile.name}}</li>
+<li>{{user_profile.phone}}</li>
+<li>{{user_profile.user.email}}</li>
+{% if request.user.company %}
+<li>{{user_profile.edrpou}}</li>
+<li>{{user_profile.location}}</li>
+<li><a href="{{user_profile.website_link}}">{{user_profile.website_link}}</a></li>
+{% endif %}
+</ul>
+
+<h1>Лоти</h1>
+
+<div class="container">
+{% for lot in lots %}
+
+    <div class="card flex-row flex-wrap">
+        {% if lot.first_image %}
+        <div class="card-header border-0">
+            <img src="{{lot.first_image.photo.url}}" alt="" style="width:250px;">
+        </div>
+        {% endif %}
+        <div class="card-block px-2">
+            <h4 class="card-title">{{lot.name}}</h4>
+            <p class="card-text">{{lot.description|truncatechars:"20"}}</p>
+            <a href="{{lot.url}}" class="btn btn-primary stretched-link">Детальніше</a>
+        </div>
+        <div class="w-100"></div>
+        <div class="card-footer w-100 text-muted">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>Завершується: {{lot.date_end}}</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="text-end">Стартова ціна: {{lot.price}} грн.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br>
+
+{% endfor %}
+</div>
+
+<div class="form-container container">
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    {% include 'includes/eazy_form.html' with form=client_lot_form %}
+    {% include 'includes/eazy_form.html' with form=company_lot_form %}
+    {% include 'includes/eazy_form.html' with form=lot_photo_form %}
+    
+    <button type="submit" class="btn btn-primary">Опублікувати</button>
+</form>
+<div>
+
+{% endblock content %}

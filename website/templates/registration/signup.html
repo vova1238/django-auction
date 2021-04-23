@@ -1,0 +1,7 @@
+{% extends 'website/main.html' %}
+
+{% block content %}
+<p>Виберіть за кого реєструватись</p>
+<a href="{% url 'signup_client' %}" class="btn btn-student btn-lg" role="button"><button type="submit" class="btn btn-primary">Клієнт</button></a>
+<a href="{% url 'signup_company' %}" class="btn btn-student btn-lg" role="button"><button type="submit" class="btn btn-primary">Компанія</button></a>
+{% endblock content %}

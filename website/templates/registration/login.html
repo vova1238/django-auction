@@ -1,0 +1,16 @@
+{% extends 'website/main.html' %}
+
+{% block content %}
+
+<form method="POST">
+    {% csrf_token %}
+    
+    {% include 'includes/eazy_form.html' with form=form %}
+    
+    <button type="submit" class="btn btn-primary">Надіслати</button>
+</form>
+
+<a href="{% url 'signup' %}">Немаю аккаунту</a>
+<a href="{% url 'password_reset' %}">Не пам'ятаю пароль</a>
+
+{% endblock content %}

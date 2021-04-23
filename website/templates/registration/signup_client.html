@@ -1,0 +1,18 @@
+{% extends 'website/main.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    {% include 'includes/eazy_form.html' with form=user_form %}
+    {% include 'includes/eazy_form.html' with form=client_profile_form %}
+    
+    <button type="submit" class="btn btn-primary">Надіслати</button>
+</form>
+</div>
+
+{% endblock content %}
