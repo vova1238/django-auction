@@ -1,0 +1,86 @@
+{% extends 'website/main.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1>Лоти</h1>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3">
+
+        </div>
+        <div class="col-sm-9">
+            {% for lot in lots %}
+
+            <div class="card flex-row flex-wrap">
+                {% if lot.first_image %}
+                <div class="card-header border-0">
+                    <img src="{{lot.first_image.photo.url}}" alt="" style="width:250px;">
+                </div>
+                {% endif %}
+                <div class="card-block px-2">
+                    <h4 class="card-title">{{lot.name}}</h4>
+                    <p class="card-text">{{lot.description|truncatechars:"20"}}</p>
+                    <a href="{{ lot.get_absolute_url }}" class="btn btn-primary stretched-link">Детальніше</a>
+                </div>
+                <div class="w-100"></div>
+                <div class="card-footer w-100 text-muted">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>Завершується: {{lot.date_end}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-end">Стартова ціна: {{lot.price}} грн.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <br>
+
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% if is_paginated %}
+
+<hr>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center pagination-sm">
+        {% if page_obj.has_previous %}
+        
+        <li class="page-item">
+            <a class="page-link" href="{% url 'lots' %}?page={{ page_obj.previous_page_number }}"
+               tabindex="-1">Попередня</a>
+        </li>
+        
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Попередня</a>
+        </li>
+        {% endif %}
+        {% for object in page_obj.paginator.page_range %}
+        <li class="page-item"><a class="page-link" href="{% url 'lots' %}?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+        
+        <li class="page-item">
+            <a class="page-link" href="{% url 'lots' %}?page={{ page_obj.next_page_number }}">Наступна</a>
+        </li>
+        
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#">Наступна</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+
+
+
+{% endif %}
+
+
+{% endblock content %}

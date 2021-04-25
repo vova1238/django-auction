@@ -2,8 +2,10 @@ from django.contrib.auth.models import User
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
+
 from website.utils import slugify
 
 
@@ -76,9 +78,12 @@ class Lot(models.Model):
     url = models.SlugField("Посилання", unique=True)
 
     class Meta:
-        verbose_name = "Лот"
-        verbose_name_plural = "Лоти"
         abstract = True
+
+    def get_absolute_url(self):
+        return reverse("lot_detail", kwargs={"slug": self.url})
+    
+    
 
 
 class ClientLot(Lot):

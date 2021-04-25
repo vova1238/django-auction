@@ -1,0 +1,36 @@
+{% extends 'website/main.html' %}
+{% load static %}
+
+{% block content %}
+
+
+{{lot}}
+
+<div class="card flex-row flex-wrap">
+    {% if lot.first_image %}
+    <div class="card-header border-0">
+        <img src="{{lot.first_image.photo.url}}" alt="" style="width:250px;">
+    </div>
+    {% endif %}
+    <div class="card-block px-2">
+        <h4 class="card-title">{{lot.name}}</h4>
+        <p class="card-text">{{lot.description|truncatechars:"20"}}</p>
+        <a href="{{lot.url}}" class="btn btn-primary stretched-link">Детальніше</a>
+    </div>
+    <div class="w-100"></div>
+    <div class="card-footer w-100 text-muted">
+        <div class="row">
+            <div class="col-md-6">
+                <p>Завершується: {{lot.date_end}}</p>
+            </div>
+            <div class="col-md-6">
+                <p class="text-end">Стартова ціна: {{lot.price}} грн.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% debug %}
+
+{% endblock content %}

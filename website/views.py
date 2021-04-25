@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import TemplateView
+from django.views.generic import ListView, DetailView
 
 from website.forms import ClientLotCreate, CompanyLotCreate, LotPhotoCreate
 from website.models import ClientLot, CompanyLot
@@ -12,15 +13,53 @@ from .forms import ClientSignForm, CompanySignForm, UserCreateForm
 
 User = get_user_model()
 
-class HomeListView(ListView):
-    model = ClientLot
-
-    paginate_by = 50
+class CompanyLotsListView(ListView):
+    model = CompanyLot
+    template_name = 'website/lot_list.html'
+    context_object_name = 'lots'
+    paginate_by = 5
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['now'] = timezone.now()
-        return context # Тута
+        # Here i can add some additional context
+        # context['now'] = timezone.now()
+        context['get_params'] = [
+
+        ]
+        return context
+
+    def get_queryset(self):
+        category = self.request.GET.get('category')
+        sorting = self.request.GET.get('sort')
+
+        allowed_sorting = {
+            'date-created', '-date-created',
+            'date_end', '-date_end',
+            'price', '-price',
+            }
+
+        if category:
+            print("Understandable category, have a nice day")
+            qs = self.model.objects.filter(category_id=category)
+        else:
+            qs = self.model.objects.all()
+
+        if sorting in allowed_sorting:
+            qs = qs.order_by(sorting)
+        else:
+            qs = qs.order_by('-date_created')
+
+
+        return qs
+        
+
+
+class CompanyLotDetailView(DetailView):
+    model = CompanyLot
+    template_name = 'website/lot_detail.html'
+    context_object_name = 'lot'
+    slug_field = 'url'
+    
 
 
 def home(request):
