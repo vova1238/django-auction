@@ -1,6 +1,6 @@
 {% extends 'website/main.html' %}
 {% load static %}
-
+{% load eazy_pagination %}
 {% block content %}
 
 <h1>Лоти</h1>
@@ -52,7 +52,7 @@
         {% if page_obj.has_previous %}
         
         <li class="page-item">
-            <a class="page-link" href="{% url 'lots' %}?page={{ page_obj.previous_page_number }}"
+            <a class="page-link" href="{% url 'lots' %}?{% query_transform page=page_obj.previous_page_number %}"
                tabindex="-1">Попередня</a>
         </li>
         
@@ -62,12 +62,12 @@
         </li>
         {% endif %}
         {% for object in page_obj.paginator.page_range %}
-        <li class="page-item"><a class="page-link" href="{% url 'lots' %}?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+        <li class="page-item"><a class="page-link" href="{% url 'lots' %}?{% query_transform page=forloop.counter %}">{{ forloop.counter }}</a></li>
         {% endfor %}
         {% if page_obj.has_next %}
         
         <li class="page-item">
-            <a class="page-link" href="{% url 'lots' %}?page={{ page_obj.next_page_number }}">Наступна</a>
+            <a class="page-link" href="{% url 'lots' %}?{% query_transform page=page_obj.next_page_number %}">Наступна</a>
         </li>
         
         {% else %}

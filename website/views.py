@@ -30,15 +30,16 @@ class CompanyLotsListView(ListView):
 
     def get_queryset(self):
         category = self.request.GET.get('category')
+        category_valid = category.isdecimal() if not category is None else False
         sorting = self.request.GET.get('sort')
-
+        
         allowed_sorting = {
             'date-created', '-date-created',
             'date_end', '-date_end',
             'price', '-price',
             }
-
-        if category:
+        
+        if category_valid:
             print("Understandable category, have a nice day")
             qs = self.model.objects.filter(category_id=category)
         else:
@@ -48,7 +49,6 @@ class CompanyLotsListView(ListView):
             qs = qs.order_by(sorting)
         else:
             qs = qs.order_by('-date_created')
-
 
         return qs
         
