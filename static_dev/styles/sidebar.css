@@ -1,0 +1,136 @@
+input[type=button],
+input[type=email],
+input[type=search],
+input[type=submit],
+input[type=text] {
+	transition: .5s all;
+	-webkit-transition: .5s all;
+	-moz-transition: .5s all;
+	-o-transition: .5s all;
+	-ms-transition: .5s all;
+	font-family: 'Source Sans Pro', sans-serif
+}
+
+body img {
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-o-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-ms-border-radius: 4px
+}
+
+[id^=drop] {
+	display: none
+}
+
+li>a:only-child:after {
+	content: ''
+}
+
+@media all and (max-width:768px) {
+	[id^=drop]:checked+ul {
+		display: block;
+		background: rgba(16, 16, 16, .85);
+		padding: 15px 0;
+		text-align: center
+	}
+}
+
+.img-deal1 {
+	padding: 0
+}
+
+.img-deal1 h3 {
+	color: #495057;
+	font-size: 13px;
+	margin-bottom: 10px;
+	text-transform: uppercase
+}
+
+.img-deal1 a {
+	font-size: 14px;
+	color: #6d6c6c
+}
+
+.img-deals img {
+	border: 1px solid #ddd
+}
+
+ul.w3layouts-box-list li {
+	list-style: none;
+	display: block;
+	margin-bottom: .9em;
+	color: #8c9398;
+	letter-spacing: 1px;
+	font-size: .9em
+}
+
+.customer-rev ul li span {
+	color: #f58b8d;
+	font-size: .8em
+}
+
+h3.sear-head {
+	color: #1e272e;
+	margin-bottom: 20px;
+	font-size: 1em;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 2px
+}
+
+.customer-rev ul li {
+	list-style: none
+}
+
+.customer-rev ul li a span {
+	color: #a4a6a9;
+	font-weight: 400;
+	margin-right: 4px
+}
+
+form.w3layouts-newsletter {
+	display: flex;
+	margin-bottom: 2.5em
+}
+
+.w3layouts-newsletter input[type=email] {
+	padding: .6em 1em;
+	font-size: 15px;
+	color: #000;
+	outline: 0;
+	letter-spacing: 2px;
+	border: none;
+	border: none;
+	flex-basis: 100%;
+	background: #efeeee
+}
+
+.w3layouts-newsletter button.btn1 {
+	color: #ff4c4c;
+	font-size: 17px;
+	letter-spacing: 1px;
+	padding: 14px 0;
+	border: transparent;
+	text-transform: uppercase;
+	-webkit-transition: .5s all;
+	-moz-transition: .5s all;
+	transition: .5s all;
+	background: #1e272e;
+	font-weight: 600;
+	cursor: pointer;
+	border-radius: 0;
+	padding: .7em 2em
+}
+
+@media (max-width:767px) {
+	.img-deals {
+		float: left;
+		width: 40%
+	}
+	.img-deal1 {
+		padding: 0;
+		float: right;
+		width: 60%
+	}
+}

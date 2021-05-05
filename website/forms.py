@@ -54,6 +54,7 @@ class CompanyLotCreate(forms.ModelForm):
         model = CompanyLot
         fields = ('name', 'description','category','price','price_gap',)
 
+
 class LotPhotoCreate(forms.ModelForm):
     class Meta:
         model = LotPhoto
