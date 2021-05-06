@@ -1,3 +1,4 @@
+{% load lot_tags %}
 <div class="search-bar w3layouts-newsletter">
     <h3 class="sear-head editContent">Пошук лоту</h3>
     <form action="#" method="post" class="d-flex editContent">
@@ -11,57 +12,33 @@
     <div class="left-side my-4">
         <h3 class="sear-head editContent">Категорія</h3>
         <ul class="w3layouts-box-list">
+            {% for category in categories %}
             <li class="editContent">
-                <input type="checkbox" name="category" value="someslug" class="checked">
-                <span class="span editContent">Категорія 1</span>
+                <input type="radio" name="category" value="{{ category.url }}" class="checked">
+                <span class="span editContent">{{ category.name }}</span>
             </li>
-            <li class="editContent">
-                <input type="checkbox" class="checked">
-                <span class="span editContent">Категорія 2</span>
-            </li>
-            <li class="editContent">
-                <input type="checkbox" class="checked">
-                <span class="span editContent">Категорія 3</span>
-            </li>
-            <li class="editContent">
-                <input type="checkbox" class="checked">
-                <span class="span editContent">Категорія 4</span>
-            </li>
+            {% endfor %}
         </ul>
     </div>
     <!-- // Categories -->
-    <!-- discounts -->
+    <!-- Sorting -->
     <div class="left-side">
-        <h3 class="sear-head editContent">Год</h3>
+        <h3 class="sear-head editContent">Сортування</h3>
+        <select name="sort">
+        {% for sorting_name, sorting in allowed_sorting.items %}
+        <option value="{{ sorting }}">{{ sorting_name }}</option>
+        {% endfor %}
+    </select>
         <ul class="w3layouts-box-list">
+            {% for sorting_name, sorting in allowed_sorting.items %}
             <li class="editContent">
-                <input type="checkbox" class="checked">
-                <span class="span editContent">2020</span>
+                <input type="checkbox" name="sort" value="{{ sorting }}" class="checked">
+                <span class="span editContent">{{ sorting_name }}</span>
             </li>
-            <li class="editContent">
-                <input type="checkbox" class="checked">
-                <span class="span editContent">2019</span>
-            </li>
-            <li class="editContent">
-                <input type="checkbox" class="checked">
-                <span class="span editContent">2018</span>
-            </li>
-            <li>
-                <input type="checkbox" class="checked">
-                <span class="span editContent">2017</span>
-            </li>
-            <li class="editContent">
-                <input type="checkbox" class="checked">
-                <span class="span editContent">2016</span>
-            </li>
-            <li class="editContent">
-                <input type="checkbox" class="checked">
-                <span class="span editContent">2015</span>
-            </li>
+            {% endfor %}
         </ul>
     </div>
-    <button type="submit">Знайти</button>
-    <!-- //discounts -->
+    <!-- // Sorting -->
     <!-- reviews -->
     <div class="customer-rev left-side my-4">
         <h3 class="sear-head editContent">Рейтинг</h3>
@@ -119,58 +96,8 @@
         </ul>
     </div>
     <!-- //reviews -->
+    <button type="submit">Знайти</button>
 </form>
-<!-- deals -->
-<div class="deal-leftmk left-side">
-    <h3 class="sear-head editContent">Последние добавленные</h3>
-    <div class="special-sec1 row mt-3 editContent">
-        <div class="img-deals col-md-4">
-            <img src="bundles/images/s4.jpg" class="img-fluid" alt="">
-        </div>
-        <div class="img-deal1 col-md-4">
-            <h3 class="editContent">Рэмбо: Последняя кровь</h3>
-            <a href="moviesingle.html" class="editContent"></a>
-        </div>
-
-    </div>
-    <div class="special-sec1 row mt-3 editContent">
-        <div class="img-deals col-md-4">
-            <img src="bundles/images/s2.jpg" class="img-fluid" alt="">
-        </div>
-        <div class="img-deal1 col-md-8">
-            <h3 class="editContent">Холодное сердце 2</h3>
-            <a href="moviesingle.html" class="editContent"></a>
-        </div>
-
-    </div>
-    <div class="special-sec1 row mt-3 editContent">
-        <div class="img-deals col-md-4">
-            <img src="bundles/images/s1.jpg" class="img-fluid" alt="">
-        </div>
-        <div class="img-deal1 col-md-8">
-            <h3 class="editContent">К звездам</h3>
-            <a href="moviesingle.html" class="editContent"></a>
-        </div>
-
-    </div>
-    <div class="special-sec1 row mt-3 editContent">
-        <div class="img-deals col-md-4">
-            <img src="bundles/images/s5.jpg" class="img-fluid" alt="">
-        </div>
-        <div class="img-deal1 col-md-8">
-            <h3 class="editContent">Терминатор: Темные судьбы</h3>
-            <a href="moviesingle.html" class="editContent"></a>
-        </div>
-
-    </div>
-    <div class="special-sec1 row mt-3 editContent">
-        <div class="img-deals col-md-4">
-            <img src="bundles/images/s3.jpg" class="img-fluid" alt="">
-        </div>
-        <div class="img-deal1 col-md-8">
-            <h3 class="editContent">Джокер</h3>
-            <a href="moviesingle.html" class="editContent"></a>
-        </div>
-
-    </div>
-</div>
+<!-- Last lots -->
+{% get_last_lots count=3 %}
+<!-- // Last lots -->

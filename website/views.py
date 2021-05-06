@@ -3,15 +3,15 @@ from django.contrib.auth.models import Group
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.views.generic import TemplateView
-from django.views.generic import ListView, DetailView
-
-from website.forms import ClientLotCreate, CompanyLotCreate, LotPhotoCreate
-from website.models import ClientLot, CompanyLot
+from django.views.generic import ListView, DetailView, TemplateView
 
 from .forms import ClientSignForm, CompanySignForm, UserCreateForm
+from website.forms import ClientLotCreate, CompanyLotCreate, LotPhotoCreate
+
+from website.models import ClientLot, CompanyLot, Category
 
 User = get_user_model()
+
 
 class CompanyLotsListView(ListView):
     model = CompanyLot
@@ -19,37 +19,40 @@ class CompanyLotsListView(ListView):
     context_object_name = 'lots'
     paginate_by = 5
 
+    allowed_sorting = {
+        'Спочатку нові': '-date_created',
+        'Спочатку старі': 'date_created',
+        'Скоро завершуються': 'date_end',
+        'Тільки почались': '-date_end',
+        'Від дешевих до дорогих': 'price',
+        'Від дорогих до дешевих': '-price',
+    }
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Here i can add some additional context
         # context['now'] = timezone.now()
-        context['get_params'] = [
-
-        ]
+        context['categories'] = Category.objects.all()
+        context['allowed_sorting'] = self.allowed_sorting
         return context
 
     def get_queryset(self):
         category = self.request.GET.get('category')
-        category_valid = category.isdecimal() if not category is None else False
         sorting = self.request.GET.get('sort')
         
-        allowed_sorting = {
-            'date-created', '-date-created',
-            'date_end', '-date_end',
-            'price', '-price',
-            }
-        
-        if category_valid:
+        if category:
             print("Understandable category, have a nice day")
-            qs = self.model.objects.filter(category_id=category)
+            qs = self.model.objects.filter(category__url=category)
         else:
+            print('Category not found')
             qs = self.model.objects.all()
 
-        if sorting in allowed_sorting:
+        if sorting in self.allowed_sorting.values():
             qs = qs.order_by(sorting)
         else:
+            print('Sorting not found', sorting, self.allowed_sorting.values())
             qs = qs.order_by('-date_created')
-
+        
         return qs
         
 
@@ -127,7 +130,7 @@ def profile(request):
         return render(request, 'website/profile.html', context=context)
     
     
-    return HttpResponse("User profile")
+    return HttpResponse("Not client profile nor company profile")
 
 
 

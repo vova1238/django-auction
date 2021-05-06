@@ -61,6 +61,9 @@ class Category(models.Model):
         verbose_name = "Категорія"
         verbose_name_plural = "Категорії"
 
+    def get_absolute_url(self):
+        return f"{reverse('lots')}?category={self.url}"
+
 
 # Lot
 class Lot(models.Model):
@@ -71,11 +74,13 @@ class Lot(models.Model):
         Category, verbose_name="Категорія", on_delete=models.SET_NULL, null=True
     )
     
-    price = models.DecimalField("Стартова ціна", max_digits=6, decimal_places=2)
+    price = models.PositiveIntegerField("Стартова ціна")
+    current_price = models.PositiveIntegerField("Ціна зараз", default = None)
     price_gap = models.DecimalField("Зміна ціни", help_text = "(Ціна, на яку можуть змінювати ціну ставки)", max_digits=6, decimal_places=2, blank=True)
     date_created = models.DateTimeField(auto_now_add=True, editable=False)
     date_end = models.DateTimeField("Дата і час завершення", auto_now_add=True)
     url = models.SlugField("Посилання", unique=True)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         abstract = True
