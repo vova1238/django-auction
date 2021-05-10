@@ -1,44 +1,65 @@
 {% extends 'website/main.html' %}
+{% load static %}
 {% load get_query %}
 
 {% block title %}Лоти{% endblock title %}
 
+{% block extra_script %}
+<script src="{% static 'scripts/search.js' %}"></script>
+{% endblock extra_script %}
+
 {% block content %}
-<h1>Лоти</h1>
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-md-3">
             {% include 'includes/sidebar.html' %}
         </div>
-        <div class="col-sm-9">
+        <div class="col-md-9 mt-4">
             {% for lot in lots %}
-
-            <div class="card flex-row flex-wrap">
-                {% if lot.first_image %}
-                <div class="card-header border-0">
-                    <img src="{{lot.first_image.photo.url}}" alt="" style="width:250px;">
-                </div>
-                {% endif %}
-                <div class="card-block px-2">
-                    <h4 class="card-title">{{lot.name}}</h4>
-                    <p class="card-text">{{lot.description|truncatechars:"20"}}</p>
-                    <a href="{{ lot.get_absolute_url }}" class="btn btn-primary stretched-link">Детальніше</a>
-                </div>
-                <div class="w-100"></div>
-                <div class="card-footer w-100 text-muted">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p>Завершується: {{lot.date_end}}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="text-end">Стартова ціна: {{lot.price}} грн.</p>
-                        </div>
+            <div class="card card-body mt-3">
+                <div
+                    class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+                    <div class="mr-2 mb-3 mb-lg-0">
+                        {% if lot.first_image %}
+                        <img src="{{lot.first_image.photo.url}}" width="150" height="150" alt="">
+                        {% endif %}
                     </div>
-
+                    <div class="media-body">
+                        <h6 class="media-title font-weight-semibold"> <a href="{{ lot.get_absolute_url }}"
+                                data-abc="true">{{lot.name}}</a></h6>
+                        <ul class="list-inline list-inline-dotted mb-3 mb-lg-2">
+                            <li class="list-inline-item"><a href="#" class="text-muted"
+                                    data-abc="true">{{ lot.category }}</a></li>
+                        </ul>
+                        <p class="mb-3">{{lot.description|truncatechars:"200"}}</p>
+                        <ul class="list-inline list-inline-dotted mb-0">
+                            <li class="list-inline-item">Усі товари <a href="#" data-abc="true">{{ lot.owner }}</a>
+                            </li>
+                            <li class="list-inline-item"><a href="#" data-abc="true">Додати до бажаного</a></li>
+                        </ul>
+                    </div>
+                    <div class="mt-3 mt-lg-0 ml-lg-3 text-center">
+                        <h3 class="mb-0 font-weight-semibold">{{lot.current_price}} грн.</h3>
+                    </div>
                 </div>
             </div>
+            <div class="card-footer w-100 text-muted">
+                <div class="row">
+                    <div class="col-md-4">
+                        <p>Завершується: {{lot.date_end}}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-end">Ставки: {{ lot.bidcompanylot_set.all|length }}</p>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <p>Стартова ціна: {{lot.price}} грн.</p>
+                    </div>
+                </div>
+            </div>
+
             <br>
+
 
             {% endfor %}
         </div>
@@ -51,26 +72,28 @@
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center pagination-sm">
         {% if page_obj.has_previous %}
-        
+
         <li class="page-item">
             <a class="page-link" href="{% url 'lots' %}?{% query_transform page=page_obj.previous_page_number %}"
-               tabindex="-1">Попередня</a>
+                tabindex="-1">Попередня</a>
         </li>
-        
+
         {% else %}
         <li class="page-item disabled">
             <a class="page-link" href="#" tabindex="-1">Попередня</a>
         </li>
         {% endif %}
         {% for object in page_obj.paginator.page_range %}
-        <li class="page-item"><a class="page-link" href="{% url 'lots' %}?{% query_transform page=forloop.counter %}">{{ forloop.counter }}</a></li>
+        <li class="page-item"><a class="page-link"
+                href="{% url 'lots' %}?{% query_transform page=forloop.counter %}">{{ forloop.counter }}</a></li>
         {% endfor %}
         {% if page_obj.has_next %}
-        
+
         <li class="page-item">
-            <a class="page-link" href="{% url 'lots' %}?{% query_transform page=page_obj.next_page_number %}">Наступна</a>
+            <a class="page-link"
+                href="{% url 'lots' %}?{% query_transform page=page_obj.next_page_number %}">Наступна</a>
         </li>
-        
+
         {% else %}
         <li class="page-item disabled">
             <a class="page-link" href="#">Наступна</a>

@@ -1,10 +1,11 @@
 {% load lot_tags %}
+{% load get_query %}
+
 <div class="search-bar w3layouts-newsletter">
     <h3 class="sear-head editContent">Пошук лоту</h3>
-    <form action="#" method="post" class="d-flex editContent">
-        {% csrf_token %}
-        <input type="search" placeholder="Введіть назву..." name="search" class="form-control" required="">
-        <button class="btn1 btn"><span class="fa fa-search" aria-hidden="true"></span></button>
+    <form action="" method="get" class="d-flex editContent">
+        <input id="search_bar" type="search" placeholder="Введіть назву..." name="search" class="form-control" required="">
+        <button onclick="doSearch()" type="button" class="btn1 btn"><span class="fa fa-search" aria-hidden="true"></span></button>
     </form>
 </div>
 <form action="" method="get">
@@ -14,7 +15,7 @@
         <ul class="w3layouts-box-list">
             {% for category in categories %}
             <li class="editContent">
-                <input type="radio" name="category" value="{{ category.url }}" class="checked">
+                <input type="checkbox" name="category" value="{{ category.url }}" class="checked">
                 <span class="span editContent">{{ category.name }}</span>
             </li>
             {% endfor %}
@@ -24,15 +25,15 @@
     <!-- Sorting -->
     <div class="left-side">
         <h3 class="sear-head editContent">Сортування</h3>
-        <select name="sort">
-        {% for sorting_name, sorting in allowed_sorting.items %}
-        <option value="{{ sorting }}">{{ sorting_name }}</option>
-        {% endfor %}
-    </select>
+        {% comment %} <select name="sort">
+            {% for sorting_name, sorting in allowed_sorting.items %}
+            <option value="{{ sorting }}">{{ sorting_name }}</option>
+            {% endfor %}
+        </select> {% endcomment %}
         <ul class="w3layouts-box-list">
             {% for sorting_name, sorting in allowed_sorting.items %}
             <li class="editContent">
-                <input type="checkbox" name="sort" value="{{ sorting }}" class="checked">
+                <input type="radio" name="sort" value="{{ sorting }}" class="checked">
                 <span class="span editContent">{{ sorting_name }}</span>
             </li>
             {% endfor %}

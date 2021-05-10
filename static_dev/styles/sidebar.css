@@ -126,11 +126,9 @@ form.w3layouts-newsletter {
 @media (max-width:767px) {
 	.img-deals {
 		float: left;
-		width: 40%
 	}
 	.img-deal1 {
 		padding: 0;
 		float: right;
-		width: 60%
 	}
 }

@@ -3,6 +3,7 @@ from django.contrib.auth.models import Group
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.db.models import Q
 from django.views.generic import ListView, DetailView, TemplateView
 
 from .forms import ClientSignForm, CompanySignForm, UserCreateForm
@@ -11,7 +12,6 @@ from website.forms import ClientLotCreate, CompanyLotCreate, LotPhotoCreate
 from website.models import ClientLot, CompanyLot, Category
 
 User = get_user_model()
-
 
 class CompanyLotsListView(ListView):
     model = CompanyLot
@@ -37,21 +37,32 @@ class CompanyLotsListView(ListView):
         return context
 
     def get_queryset(self):
-        category = self.request.GET.get('category')
+        search_query = self.request.GET.get('search')
+        category = self.request.GET.getlist('category')
         sorting = self.request.GET.get('sort')
+
+        qs = self.model.objects.filter(is_active=True).order_by('-date_created')
+
+        if search_query:
+            qs = qs.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query)
+            ).distinct()
+            print(f'Found {qs} for search word {search_query}')
         
         if category:
-            print("Understandable category, have a nice day")
-            qs = self.model.objects.filter(category__url=category)
+            print(f"Understandable category - {category}, have a nice day")
+            qs = qs.filter(
+                Q(category__url__in=category)
+            ).distinct()
         else:
             print('Category not found')
-            qs = self.model.objects.all()
 
-        if sorting in self.allowed_sorting.values():
-            qs = qs.order_by(sorting)
-        else:
-            print('Sorting not found', sorting, self.allowed_sorting.values())
-            qs = qs.order_by('-date_created')
+        if sorting:
+            if sorting in self.allowed_sorting.values():
+                qs = qs.order_by(sorting)
+            else:
+                print(f'Sorting {sorting} not found in {self.allowed_sorting.values()}')
         
         return qs
         

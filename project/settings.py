@@ -90,7 +90,10 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
-        'OPTIONS': {'charset': 'utf8mb4'},
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'init_command': 'SET foreign_key_checks = 1;',
+        },
     }
 }
 

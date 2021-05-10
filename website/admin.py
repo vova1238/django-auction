@@ -9,6 +9,8 @@ class LotPhotoInline(admin.TabularInline):
     model = LotPhoto
 
 class CompanyLotAdmin(admin.ModelAdmin):
+    list_display_links = ['name']
+    list_display = ['is_active', 'owner', 'name', 'category', 'price', 'current_price', 'price_gap', 'date_created', 'date_end',]
     inlines = [
         LotPhotoInline,
     ]

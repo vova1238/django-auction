@@ -15,6 +15,7 @@ urlpatterns = [
     path('accounts/signup/client/', views.signup_client, name='signup_client'),
     path('accounts/', include('django.contrib.auth.urls')),
 
-    path('lots/', views.CompanyLotsListView.as_view(), name="lots"),
-    path('lot/<slug:slug>', views.CompanyLotDetailView.as_view(), name="lot_detail")
+    path('lots/', views.CompanyLotsListView.as_view(), name='lots'),
+    path('lot/<slug:slug>', views.CompanyLotDetailView.as_view(), name='lot_detail'),
+    
 ]

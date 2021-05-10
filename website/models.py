@@ -76,11 +76,11 @@ class Lot(models.Model):
     
     price = models.PositiveIntegerField("Стартова ціна")
     current_price = models.PositiveIntegerField("Ціна зараз", default = None)
-    price_gap = models.DecimalField("Зміна ціни", help_text = "(Ціна, на яку можуть змінювати ціну ставки)", max_digits=6, decimal_places=2, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True, editable=False)
-    date_end = models.DateTimeField("Дата і час завершення", auto_now_add=True)
+    price_gap = models.PositiveIntegerField("Зміна ціни", help_text = "(Ціна, на яку можуть змінювати ціну ставки)", blank=True, default=30)
+    date_created = models.DateTimeField("Створено", auto_now_add=True, editable=False)
+    date_end = models.DateTimeField("Завершується")
     url = models.SlugField("Посилання", unique=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField('Активний', default=True)
 
     class Meta:
         abstract = True
@@ -120,7 +120,7 @@ class CompanyLot(Lot):
     lot_type = models.CharField(max_length=50, editable=False, default="auction")
 
     def __str__(self):
-        return str(self.owner)
+        return f'{self.name} - ({self.owner})'
 
     class Meta:
         verbose_name = "Лот компанії"
@@ -154,7 +154,7 @@ class LotPhoto(models.Model):
         verbose_name_plural = "Фотографії лотів"
 
     def __str__(self):
-        return "Photo №" + str(self.id)
+        return f'{self.lot.name} - ({self.lot.owner})'
 
 
 class BidClientLot(models.Model):
@@ -171,8 +171,9 @@ class BidClientLot(models.Model):
 
 class BidCompanyLot(models.Model):
     lot = models.ForeignKey(
-        ClientLot, on_delete = models.CASCADE
+        CompanyLot, on_delete = models.CASCADE
     )
+    bidder = models.ForeignKey(Client, verbose_name='bid', on_delete = models.CASCADE, default=None)
     hiden_name = models.CharField("Ім'я", max_length=255)
     price = models.DecimalField("Ставка", max_digits=6, decimal_places=2)
     date_created = models.DateTimeField(auto_now_add=True, editable=False)
@@ -180,6 +181,9 @@ class BidCompanyLot(models.Model):
     class Meta:
         verbose_name = "Ставка на лот компанії"
         verbose_name_plural = "Ставки на лот компанії"
+
+    def __str__(self):
+        return self.hiden_name
 
 
 # Reviews
