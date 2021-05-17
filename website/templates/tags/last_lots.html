@@ -4,7 +4,17 @@
         <div class="special-sec1 row mt-3 editContent">
             <div class="img-deals card col-md-8 offset-md-1" style="border:none;">
                 <img src="{{lot.first_image.photo.url}}" class="img-fluid" alt="">
-                <h3 class="editContent">{{ lot.name }}</h3>
+                <div class="row">
+                    <h4 class="editContent col-md">{{ lot.name }}</h4>
+                    <div class="col-md my-auto">
+                        <table>
+                            <tr style="font-size:20px;">
+                                <td>Від:&nbsp;</td>
+                                <td><span class="font-size-16 text-danger">{{ lot.price }}&nbsp;грн.</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
                 <a href="{{ lot.get_absolute_url }}" class="editContent stretched-link"></a>
             </div>
         </div>

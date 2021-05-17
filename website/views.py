@@ -1,15 +1,19 @@
+import datetime
+
+from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.models import Group
-from django.http import HttpResponse, HttpResponseRedirect
+from django.db.models import Q
+from django.http import HttpResponse, HttpResponseRedirect, request
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.db.models import Q
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic.edit import FormMixin
 
-from .forms import ClientSignForm, CompanySignForm, UserCreateForm
 from website.forms import ClientLotCreate, CompanyLotCreate, LotPhotoCreate
+from website.models import BidCompanyLot, Category, CompanyLot
 
-from website.models import ClientLot, CompanyLot, Category
+from .forms import ClientSignForm, CompanySignForm, CreateBid, UserCreateForm
 
 User = get_user_model()
 
@@ -38,8 +42,8 @@ class CompanyLotsListView(ListView):
 
     def get_queryset(self):
         search_query = self.request.GET.get('search')
-        category = self.request.GET.getlist('category')
-        sorting = self.request.GET.get('sort')
+        category_query = self.request.GET.getlist('category')
+        sorting_query = self.request.GET.get('sort')
 
         qs = self.model.objects.filter(is_active=True).order_by('-date_created')
 
@@ -48,33 +52,80 @@ class CompanyLotsListView(ListView):
                 Q(name__icontains=search_query) |
                 Q(description__icontains=search_query)
             ).distinct()
-            print(f'Found {qs} for search word {search_query}')
         
-        if category:
-            print(f"Understandable category - {category}, have a nice day")
+        if category_query:
             qs = qs.filter(
-                Q(category__url__in=category)
+                Q(category__url__in=category_query)
             ).distinct()
-        else:
-            print('Category not found')
 
-        if sorting:
-            if sorting in self.allowed_sorting.values():
-                qs = qs.order_by(sorting)
-            else:
-                print(f'Sorting {sorting} not found in {self.allowed_sorting.values()}')
+        if sorting_query:
+            if sorting_query in self.allowed_sorting.values():
+                qs = qs.order_by(sorting_query)
         
         return qs
         
 
 
-class CompanyLotDetailView(DetailView):
+class CompanyLotDetailView(FormMixin, DetailView):
     model = CompanyLot
     template_name = 'website/lot_detail.html'
     context_object_name = 'lot'
     slug_field = 'url'
+    form_class = CreateBid
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Here i can add some additional context
+        # context['now'] = timezone.now()
+        current_lot = self.get_object()
+        context['bids'] = BidCompanyLot.objects.filter(lot=current_lot.id).order_by('-date_created')
+        context['form'] = self.get_form()
+        return context
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        if not self.request.user.is_authenticated:
+            messages.error(self.request, "Тільки зареєстрований клієнт може ставити ставки")
+            return HttpResponseRedirect(redirect_to = reverse('login'))
+
+        if not self.request.user.groups.filter(name='client').exists():
+            messages.error(self.request, "Тільки клієнт може ставити ставки")
+            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
+
+        lot = self.get_object()
+        if form.clean_price() >= lot.current_price + lot.price_gap:
+            print('Valid number')
+            bid = BidCompanyLot()
+            client = self.request.user.client
+            bid.lot = lot
+            bid.bidder = client
+            bid.hiden_name = client.name[:2] + "***" + client.name[-1:]
+            bid.price = form.clean_price()
+            bid.date_created = datetime.datetime.now()
+            bid.save()
+
+            lot.current_price = form.clean_price()
+            lot.save()
+        else:
+            messages.error(self.request, "Ставка занадто мала")
+            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
+
+        print(f'Form data {form.cleaned_data}')
+        return super(CompanyLotDetailView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        #put logic here
+        return super(CompanyLotDetailView, self).form_invalid(form)
+
+    def get_success_url(self):
+        return self.request.path
 
 def home(request):
     return render(request, 'website/index.html', context = {'page_name': 'Home page'})

@@ -75,11 +75,11 @@ class Lot(models.Model):
     )
     
     price = models.PositiveIntegerField("Стартова ціна")
-    current_price = models.PositiveIntegerField("Ціна зараз", default = None)
+    current_price = models.PositiveIntegerField("Ціна зараз", default = None, blank=True, null=True)
     price_gap = models.PositiveIntegerField("Зміна ціни", help_text = "(Ціна, на яку можуть змінювати ціну ставки)", blank=True, default=30)
     date_created = models.DateTimeField("Створено", auto_now_add=True, editable=False)
     date_end = models.DateTimeField("Завершується")
-    url = models.SlugField("Посилання", unique=True)
+    url = models.SlugField("Посилання", unique=True, blank=True, null=True)
     is_active = models.BooleanField('Активний', default=True)
 
     class Meta:
@@ -103,16 +103,19 @@ class ClientLot(Lot):
         verbose_name_plural = "Лоти клієнта"
 
     def save(self, *args, **kwargs):
+        # Do if this is a new instance
+        if not self.pk:
+            self.current_price = self.price
 
-        slug = slugify(self.name)[:50]
-        if not ClientLot.objects.filter(url = slug).exists():
-            self.url = slug
-        else:
-            super(ClientLot, self).save(*args, **kwargs)
-            id_length = len(str(self.id)) + 1
-            slugify(self.name)[:50 - id_length]
-            self.url = slug  + '-' + str(self.id)
-        
+            slug = slugify(self.name)[:50]
+            if not ClientLot.objects.filter(url = slug).exists():
+                self.url = slug
+            else:
+                super(ClientLot, self).save(*args, **kwargs)
+                id_length = len(str(self.id)) + 1
+                slugify(self.name)[:50 - id_length]
+                self.url = slug  + '-' + str(self.id)
+            
         super(ClientLot, self).save(*args, **kwargs)
 
 class CompanyLot(Lot):
@@ -130,15 +133,20 @@ class CompanyLot(Lot):
         return self.images.first()
 
     def save(self, *args, **kwargs):
-
-        slug = slugify(self.name)[:50]
-        if not CompanyLot.objects.filter(url = slug).exists():
-            self.url = slug
-        else:
-            super(CompanyLot, self).save(*args, **kwargs)
-            id_length = len(str(self.id)) + 1
-            slugify(self.name)[:50 - id_length]
-            self.url = slug  + '-' + str(self.id)
+        # Do if this is a new instance
+        if not self.pk:
+            self.current_price = self.price
+        
+            slug = slugify(self.name)[:50]
+            # Create slug if it does not exists yet
+            if not CompanyLot.objects.filter(url = slug).exists():
+                self.url = slug
+            # If slug exists add lot id to the end of the slug
+            else:
+                super(CompanyLot, self).save(*args, **kwargs)
+                id_length = len(str(self.id)) + 1
+                slugify(self.name)[:50 - id_length]
+                self.url = slug  + '-' + str(self.id)
         
         super(CompanyLot, self).save(*args, **kwargs)
 
@@ -162,7 +170,7 @@ class BidClientLot(models.Model):
         ClientLot, on_delete = models.CASCADE
     )
     hiden_name = models.CharField("Ім'я", max_length=255)
-    price = models.DecimalField("Ставка", max_digits=6, decimal_places=2)
+    price = models.PositiveIntegerField("Ставка")
     date_created = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
@@ -175,7 +183,7 @@ class BidCompanyLot(models.Model):
     )
     bidder = models.ForeignKey(Client, verbose_name='bid', on_delete = models.CASCADE, default=None)
     hiden_name = models.CharField("Ім'я", max_length=255)
-    price = models.DecimalField("Ставка", max_digits=6, decimal_places=2)
+    price = models.PositiveIntegerField("Ставка")
     date_created = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:

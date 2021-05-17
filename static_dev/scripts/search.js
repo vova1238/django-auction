@@ -1,4 +1,4 @@
-function insertParam(key, value) {
+function insertParam(key, value, exclude_param) {
     key = encodeURIComponent(key);
     value = encodeURIComponent(value);
 
@@ -7,6 +7,7 @@ function insertParam(key, value) {
     let i=0;
 
     for(; i<kvp.length; i++){
+        if (kvp[i].startsWith(exclude_param + '=')){kvp[i] = ''}
         if (kvp[i].startsWith(key + '=')) {
             let pair = kvp[i].split('=');
             pair[1] = value;
@@ -28,6 +29,7 @@ function insertParam(key, value) {
 
 function doSearch(){
     var search_bar = document.getElementById('search_bar');
-    console.log(search_bar.value);
-    insertParam('search', search_bar.value);
+    if (search_bar.value){
+        insertParam('search', search_bar.value, 'page');
+    }
 }

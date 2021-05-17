@@ -1,0 +1,63 @@
+button,
+button:focus {
+	outline: 0!important;
+	box-shadow: none!important
+}
+
+.font-size-12 {
+	font-size: 12px
+}
+
+.font-size-14 {
+	font-size: 14px
+}
+
+.font-size-16 {
+	font-size: 16px
+}
+
+.font-size-20 {
+	font-size: 20px
+}
+
+.color-primary {
+	color: #003859
+}
+
+.color-primary-bg {
+	background: #003859
+}
+
+.color-second {
+	color: #00a5c4
+}
+
+.color-second-bg {
+	background: #00a5c4
+}
+
+.color-yellow {
+	color: #ffd289
+}
+
+.color-yellow-bg {
+	background: #ffd289
+}
+
+#top-sale .owl-carousel .item .product a {
+	overflow: hidden
+}
+
+#top-sale .owl-carousel .item .product img {
+	transition: transform .5s ease
+}
+
+#top-sale .owl-carousel .item .product img:hover {
+	transform: scale(1.1)
+}
+
+.bid-table{
+	border: 1px solid #dfdfdf;
+    border-radius: 8px;
+    padding: 20px;
+}

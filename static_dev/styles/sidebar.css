@@ -106,7 +106,7 @@ form.w3layouts-newsletter {
 	background: #efeeee
 }
 
-.w3layouts-newsletter button.btn1 {
+button.btn1 {
 	color: #ff4c4c;
 	font-size: 17px;
 	letter-spacing: 1px;
@@ -121,6 +121,18 @@ form.w3layouts-newsletter {
 	cursor: pointer;
 	border-radius: 0;
 	padding: .7em 2em
+}
+
+.btn1:hover {
+    color: #fff;
+    background-color: #374957;
+    border-color: #5d6b75;
+}
+
+.btn1:active{
+	color: #fff;
+    background-color: #2e3c47;
+    border-color: #374957;
 }
 
 @media (max-width:767px) {

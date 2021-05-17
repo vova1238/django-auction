@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group, User
 
-from website.models import ClientLot, CompanyLot, LotPhoto
+from website.models import ClientLot, CompanyLot, BidCompanyLot, LotPhoto
 
 from .models import Client, Company
 
@@ -41,6 +41,23 @@ class CompanySignForm(forms.ModelForm):
         model = Company
         fields = ('name', 'profile_pic', 'phone', 'edrpou', 'location', 'website_link',)
 
+
+class CreateBid(forms.ModelForm):
+    class Meta:
+        model = BidCompanyLot
+        fields = ('price',)
+
+    def clean_price(self):
+        price = self.cleaned_data.get('price')
+        return price
+
+    def save(self, commit=True):
+        bid = super(CreateBid, self).save(commit=False)
+        bid.price = self.cleaned_data['price']
+        if commit:
+            bid.save()
+        return bid
+    
 
 # Lot add
 class ClientLotCreate(forms.ModelForm):
