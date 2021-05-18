@@ -21,8 +21,10 @@
                 <div
                     class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
                     <div class="mr-2 mb-3 mb-lg-0">
-                        {% if lot.first_image %}
+                        {% if lot.first_image.photo.url %}
                         <img src="{{lot.first_image.photo.url}}" width="150" height="150" alt="">
+                        {% else %}
+                        <img src="{% static 'images/images.png' %}" width="150" height="150" alt="">
                         {% endif %}
                     </div>
                     <div class="media-body">
@@ -51,7 +53,7 @@
                         <p>Завершується: {{lot.date_end}}</p>
                     </div>
                     <div class="col-md-4">
-                        <p class="text-end">Ставки: {{ lot.bidcompanylot_set.all|length }}</p>
+                        <p class="text-end">Ставки: {{ lot.bidcompanylot_set.count }}</p>
                     </div>
                     <div class="col-md-4 text-right">
                         <p>Стартова ціна: {{lot.price}} грн.</p>

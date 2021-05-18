@@ -8,13 +8,49 @@
 
 {% block extra_script %}
 <script>
-            {% if messages %}
-                {% for message in messages %}
-                    window.setTimeout(function(){
-                    alert('{{message}}');
-                    }, 500); 
-                {% endfor %}
-            {% endif %}
+    {% if messages %} {%for message in messages %}
+    window.setTimeout(function () {
+        alert('{{message}}');
+    }, 500); {% endfor %} {% endif %}
+
+// Set the date we're counting down to
+var countDownDate = new Date("{{ lot.date_end|date:"c" }}").getTime();
+  
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+//Get server timezone
+var serverTimeZoneOffset = "{% now "Z" %}";
+
+// Get today's date and time
+var now = new Date(new Date().getTime());
+
+// Create offseted time
+var offsetTime = new Date(now + serverTimeZoneOffset).getTime();
+
+// Find the distance between now and the count down date
+var distance = countDownDate - offsetTime;
+
+console.log("Time now ", offsetTime);
+console.log("Time end ", countDownDate);
+console.log("Distance ", distance);
+    
+// Time calculations for days, hours, minutes and seconds
+var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+// Output the result in an element with id="countdown"
+document.getElementById("countdown").innerHTML = days + " дн. " + hours + " г. "
++ minutes + " хв. " + seconds + " с.";
+    
+// If the count down is over, write some text 
+if (distance < 0) {
+  clearInterval(x);
+  document.getElementById("countdown").innerHTML = "Лот завершився";
+}
+}, 1000);
 </script>
 {% endblock extra_script %}
 
@@ -26,7 +62,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-6">
+                {% if lot.first_image.photo.url %}
                     <img src="{{ lot.first_image.photo.url }}" alt="Картинка лоту" class="img-fluid">
+                {% else %}
+                <div style="background-image: url(..{% static 'images/images.png' %}); background-size: cover; height:100%;"></div>
+                {% endif %}
                 </div>
                 <div class="col-sm-6 py-5">
                     <h5 class="font-size-20">{{ lot.name }}</h5>
@@ -57,12 +97,11 @@
                             <td><span class="font-size-16 text-danger">{{ lot.price }}&nbsp;грн.</span></td>
                         </tr>
                     </table>
-                    <!---    !product price       -->
 
                     <form action="" method="post">
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="form-row pt-4 font-size-16">
+                        {% include 'includes/bid_form.html' with form=form %}
+                        <div class="form-row font-size-16">
                             {% comment %} <div class="col">
                                 <button type="submit" class="btn btn-danger form-control">Купити одразу</button>
                             </div> {% endcomment %}
@@ -71,6 +110,18 @@
                             </div>
                         </div>
                     </form>
+                    <!---    !product price       -->
+
+                    <!-- additional info -->
+                    <div class="additional-info mt-4 ml-2">
+                        <p><i class="bi bi-cash-stack"></i><i class="bi bi-arrow-up"></i>Мінімальний розмір ставки: {{ lot.price_gap }} грн.</p>
+
+                        <p><i class="bi bi-people"></i>&nbsp;&nbsp;Зроблено ставок: {{ lot.bidcompanylot_set.count }}, Лідер: {{ bids.0 }}</p>
+
+                        <p><i class="bi bi-clock"></i>&nbsp;&nbsp;<strong id="countdown"></strong>, ({{ lot.date_end }})</p>
+                    </div>
+
+                    <!-- !additional info -->
                 </div>
 
                 <div class="col-12 mt-4">

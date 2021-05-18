@@ -1,5 +1,4 @@
-import datetime
-
+from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.models import Group
@@ -82,6 +81,12 @@ class CompanyLotDetailView(FormMixin, DetailView):
         context['form'] = self.get_form()
         return context
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.initial = {'price': self.object.current_price + self.object.price_gap}
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.get_form()
@@ -97,9 +102,16 @@ class CompanyLotDetailView(FormMixin, DetailView):
 
         if not self.request.user.groups.filter(name='client').exists():
             messages.error(self.request, "Тільки клієнт може ставити ставки")
-            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
+            return self.form_invalid(form)
 
         lot = self.get_object()
+        
+        if lot.date_end < timezone.now():
+            lot.is_active=False
+            lot.save()
+            messages.error(self.request, "Лот вже не активний")
+            return self.form_invalid(form)
+
         if form.clean_price() >= lot.current_price + lot.price_gap:
             print('Valid number')
             bid = BidCompanyLot()
@@ -108,7 +120,7 @@ class CompanyLotDetailView(FormMixin, DetailView):
             bid.bidder = client
             bid.hiden_name = client.name[:2] + "***" + client.name[-1:]
             bid.price = form.clean_price()
-            bid.date_created = datetime.datetime.now()
+            bid.date_created = timezone.now()
             bid.save()
 
             lot.current_price = form.clean_price()
@@ -117,14 +129,13 @@ class CompanyLotDetailView(FormMixin, DetailView):
             messages.error(self.request, "Ставка занадто мала")
             return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
 
-        print(f'Form data {form.cleaned_data}')
         return super(CompanyLotDetailView, self).form_valid(form)
 
     def form_invalid(self, form):
-        #put logic here
         return super(CompanyLotDetailView, self).form_invalid(form)
 
     def get_success_url(self):
+        messages.error(self.request, "Ставку додано")
         return self.request.path
 
 def home(request):
