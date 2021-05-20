@@ -15,7 +15,7 @@ class SiteUser(models.Model):
     profile_pic = ResizedImageField("Зображення профілю", size=[150, 150], upload_to="profiles/%Y/%m/%d", null=True, blank=True)
 
     phone_regex = RegexValidator(regex=r'((\+38)?\(?\d{3}\)?[\s\.-]?(\d{7}|\d{3}[\s\.-]\d{2}[\s\.-]\d{2}|\d{3}-\d{4}))', message="Номер телефону повинен бути введений у форматі: '+380XXXXXXXXX")
-    phone = models.CharField("Телефон", validators=[phone_regex], max_length=17, blank=True)
+    phone = models.CharField("Телефон", validators=[phone_regex], max_length=17, blank=False)
 
     class Meta:
         abstract = True

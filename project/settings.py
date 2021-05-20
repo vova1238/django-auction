@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+from datetime import timedelta
 from os.path import join
 from pathlib import Path
 
@@ -32,7 +33,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'website.apps.WebsiteConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +43,11 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'widget_tweaks',
     'django_extensions',
+    'django_celery_beat',
+    'django_celery_results',
+    #
+    'website.apps.WebsiteConfig',
+    'celery_app.apps.CeleryAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +65,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [join(BASE_DIR, 'website', 'templates')],
+        'DIRS': [join(BASE_DIR, 'website', 'templates'), join(BASE_DIR, 'celery_app', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -167,3 +172,16 @@ DJANGORESIZED_DEFAULT_KEEP_META = True
 DJANGORESIZED_DEFAULT_FORCE_FORMAT = 'PNG'
 DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'PNG': ".png"}
 DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
+
+# CELERY_BROKER_URL = 'amqp://guest:**@localhost:15672//'
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_TIMEZONE = 'Europe/Kiev'
+
+CELERY_BEAT_SCHEDULE = {
+    'every-second': {
+        'task': 'celery_app.tasks.check_bidding_end',
+        'schedule': timedelta(seconds=1),
+    },
+}

@@ -2,8 +2,9 @@
 {% load static %}
 
 {% block content %}
-
+{% if user_profile.profile_pic.url %}
 <img src="{{user_profile.profile_pic.url}}" alt="" style="width:150px;">
+{% endif %}
 <ul>
 <li>{{user_profile.name}}</li>
 <li>{{user_profile.phone}}</li>

@@ -48,6 +48,7 @@ document.getElementById("countdown").innerHTML = days + " дн. " + hours + " г
 // If the count down is over, write some text 
 if (distance < 0) {
   clearInterval(x);
+  {% if lot.is_active %}location.reload();{% endif %}
   document.getElementById("countdown").innerHTML = "Лот завершився";
 }
 }, 1000);
@@ -98,6 +99,7 @@ if (distance < 0) {
                         </tr>
                     </table>
 
+{% if lot.is_active %}
                     <form action="" method="post">
                         {% csrf_token %}
                         {% include 'includes/bid_form.html' with form=form %}
@@ -110,6 +112,9 @@ if (distance < 0) {
                             </div>
                         </div>
                     </form>
+{% else %}
+<p class="font-size-20"><i class="bi bi-emoji-laughing"></i>&nbsp;&nbsp;Переміг: {{ bids.0 }}</p>
+{% endif %}
                     <!---    !product price       -->
 
                     <!-- additional info -->
