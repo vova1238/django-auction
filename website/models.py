@@ -135,6 +135,7 @@ class CompanyLot(Lot):
     def save(self, *args, **kwargs):
         # Do if this is a new instance
         if not self.pk:
+            
             self.current_price = self.price
         
             slug = slugify(self.name)[:50]

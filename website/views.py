@@ -106,9 +106,8 @@ class CompanyLotDetailView(FormMixin, DetailView):
 
         lot = self.get_object()
         
+        # Додатковий захист
         if lot.date_end < timezone.now():
-            lot.is_active=False
-            lot.save()
             messages.error(self.request, "Лот вже не активний")
             return self.form_invalid(form)
 

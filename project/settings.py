@@ -178,10 +178,3 @@ DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
 # CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_TIMEZONE = 'Europe/Kiev'
-
-CELERY_BEAT_SCHEDULE = {
-    'every-second': {
-        'task': 'celery_app.tasks.check_bidding_end',
-        'schedule': timedelta(seconds=1),
-    },
-}

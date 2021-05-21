@@ -9,7 +9,7 @@ from django.utils import timezone
 from project.celery import app
 from website.models import BidCompanyLot, CompanyLot
 
-@app.task
+
 def mail_winner(company_lot):
     last_bid = company_lot.bidcompanylot_set.last()
     if last_bid:
@@ -39,3 +39,10 @@ def check_bidding_end():
             company_lot.is_active = False
             company_lot.save()
             mail_winner(company_lot)
+
+@app.task
+def company_lot_end_task(company_lot_id):
+    company_lot = CompanyLot.objects.get(id=company_lot_id)
+    company_lot.is_active = False
+    company_lot.save()
+    mail_winner(company_lot)
