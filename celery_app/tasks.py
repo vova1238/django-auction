@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from project.celery import app
-from website.models import BidCompanyLot, CompanyLot
+from website.models import CompanyLot
 
 
 def mail_winner(company_lot):
@@ -31,18 +31,11 @@ def mail_winner(company_lot):
         return f"Ніхто не брав участі в торгах за лот {company_lot}"
 
 @app.task
-def check_bidding_end():
-    all_company_lots = CompanyLot.objects.filter(is_active=True)
-
-    for company_lot in all_company_lots.iterator():
-        if company_lot.date_end < timezone.now():
-            company_lot.is_active = False
-            company_lot.save()
-            mail_winner(company_lot)
-
-@app.task
 def company_lot_end_task(company_lot_id):
-    company_lot = CompanyLot.objects.get(id=company_lot_id)
-    company_lot.is_active = False
-    company_lot.save()
-    mail_winner(company_lot)
+    try:
+        company_lot = CompanyLot.objects.get(id=company_lot_id)
+        company_lot.is_active = False
+        company_lot.save()
+        mail_winner(company_lot)
+    except CompanyLot.DoesNotExist as e:
+        print("Лот не знайдено", e)

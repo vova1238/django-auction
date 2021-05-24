@@ -60,7 +60,7 @@ class CompanyLotsListView(ListView):
         if sorting_query:
             if sorting_query in self.allowed_sorting.values():
                 qs = qs.order_by(sorting_query)
-        
+
         return qs
         
 

@@ -17,10 +17,17 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.contrib.flatpages import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('website.urls')),
+]
+
+urlpatterns += [
+    path('about/', views.flatpage, {'url': '/about/'}, name='about'),
+    path('license/', views.flatpage, {'url': '/license/'}, name='license'),
+    path('pages/', include('django.contrib.flatpages.urls')),
 ]
 
 if settings.DEBUG:

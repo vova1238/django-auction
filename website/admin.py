@@ -5,10 +5,18 @@ from website.models import (BidClientLot, BidCompanyLot, Category, Client,
                             ClientLot, ClientReview, Company, CompanyLot,
                             CompanyReview, LotPhoto)
 
+def duplicate_event(modeladmin, request, queryset):
+    for object in queryset:
+        object.id = None
+        object.url = None
+        object.save()
+duplicate_event.short_description = "Дублювати"
+
 class LotPhotoInline(admin.TabularInline):
     model = LotPhoto
 
 class CompanyLotAdmin(admin.ModelAdmin):
+    actions = [duplicate_event,]
     list_display_links = ['name']
     list_display = ['is_active', 'owner', 'name', 'category', 'price', 'current_price', 'price_gap', 'date_created', 'date_end',]
     inlines = [

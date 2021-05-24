@@ -16,6 +16,9 @@
             {% include 'includes/sidebar.html' %}
         </div>
         <div class="col-md-9 mt-4">
+            {% if not lots %}
+            <p style="font-size: 30px;">Лотів не знайдено</p>
+            {% endif %}
             {% for lot in lots %}
             <div class="card card-body mt-3">
                 <div
