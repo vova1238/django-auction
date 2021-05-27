@@ -50,6 +50,7 @@ class Company(SiteUser):
 
 # Lot category
 class Category(models.Model):
+    image = ResizedImageField("Картинка", size = [150, 150], crop=['middle', 'center'], upload_to="categories/%Y/%m/%d", null=True, blank=True)
     name = models.CharField("Назва категорії", max_length=150)
     description = models.TextField("Опис")
     url = models.SlugField("Посилання", unique=True)

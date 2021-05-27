@@ -83,6 +83,7 @@ class CompanyLotDetailView(FormMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+        # Set default value in price field
         self.initial = {'price': self.object.current_price + self.object.price_gap}
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
@@ -137,8 +138,16 @@ class CompanyLotDetailView(FormMixin, DetailView):
         messages.error(self.request, "Ставку додано")
         return self.request.path
 
-def home(request):
-    return render(request, 'website/index.html', context = {'page_name': 'Home page'})
+def index(request):
+    categories = Category.objects.filter(image__isnull = False).order_by('id')
+    company_lots = CompanyLot.objects.order_by('-date_created')[:10]
+
+    context = {
+        "categories": categories,
+        "company_lots": company_lots,
+    }
+    return render(request, 'website/index.html', context)
+
 
 
 def profile(request):

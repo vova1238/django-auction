@@ -8,7 +8,7 @@ from django.urls import include, path
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='home',),
+    path('', views.index, name='home',),
     path('accounts/profile/', views.profile, name = 'profile'),
     path('accounts/signup/', views.signup.as_view(), name='signup'),
     path('accounts/signup/company/', views.signup_company, name='signup_company'),

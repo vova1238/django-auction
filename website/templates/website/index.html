@@ -1,10 +1,81 @@
 {% extends 'website/main.html' %}
 {% load static %}
 
+{% block title %}Лоти{% endblock title %}
+
 {% block content %}
 
-<p>{{ page_name }}</p>
+<div class="container">
+    <div class="my-5">
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <a href="{% url 'lots' %}?phones">
+                <img class="d-block w-100" src="{% static 'images/carousel/phones.jpg' %}" alt="First slide">
+                </a>
+            </div>
+            <div class="carousel-item">
+            <a href="{% url 'lots' %}?notebooks">
+                <img class="d-block w-100" src="{% static 'images/carousel/laptop.jpg' %}" alt="Second slide">
+                </a>
+            </div>
+            <div class="carousel-item">
+            <a href="{% url 'lots' %}?tablets">
+                <img class="d-block w-100" src="{% static 'images/carousel/tablets.jpg' %}" alt="Third slide">
+                </a>
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    </div>
 
-<img src="">
+    <h2>Оберіть категорію:</h2>
+    <hr>
+    <div class="row" style="justify-content: space-between;">
+        {% for category in categories %}
+        <div class="category-block mx-3">
+            <a href="{% url 'lots' %}?{{ category.url }}">
+                <img src="{{ category.image.url }}" alt="Картинка категорії">
+            </a>
+            <p>{{ category.name }}</p>
+        </div>
+        {% endfor %}
+    </div>
 
+    <h2 class="sear-head editContent">Останні лоти</h2>
+    <hr>
+    {% for lot in company_lots %}
+        <div class="special-sec1 row mt-3 editContent">
+            <div class="img-deals card col-md-8 offset-md-1" style="border:none;">
+                <img src="{{lot.first_image.photo.url}}" class="img-fluid" alt="">
+                <div class="row">
+                    <h4 class="editContent col-md">{{ lot.name }}</h4>
+                    <div class="col-md my-auto">
+                        <table>
+                            <tr style="font-size:20px;">
+                                <td>Від:&nbsp;</td>
+                                <td><span class="font-size-16 text-danger">{{ lot.price }}&nbsp;грн.</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <a href="{{ lot.get_absolute_url }}" class="editContent stretched-link"></a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+    
 {% endblock content %}
