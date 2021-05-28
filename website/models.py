@@ -147,7 +147,7 @@ class CompanyLot(Lot):
             else:
                 super(CompanyLot, self).save(*args, **kwargs)
                 id_length = len(str(self.id)) + 1
-                slugify(self.name)[:50 - id_length]
+                slug = slugify(self.name)[:50 - id_length]
                 self.url = slug  + '-' + str(self.id)
         
         super(CompanyLot, self).save(*args, **kwargs)

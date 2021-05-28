@@ -5,9 +5,9 @@ from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.http import request
 from django.template.loader import render_to_string
-from django.utils import timezone
-import pytz
+from pytz import timezone
 
+from project import settings
 from project.celery import app
 from website.models import CompanyLot
 
@@ -56,10 +56,12 @@ def mail_seller(company_lot):
 def company_lot_end_task(self, company_lot_id):
     try:
         company_lot = CompanyLot.objects.get(id=company_lot_id)
+        if not self.request.eta == company_lot.date_end.astimezone(timezone(settings.TIME_ZONE)).isoformat():
+            return f"\nDid not executed wining scenario ETA was: {self.request.eta} \nand lot end time was:                     {company_lot.date_end.astimezone(timezone(settings.TIME_ZONE)).isoformat()}"
         company_lot.is_active = False
         company_lot.save()
         mail_winner(company_lot)
         mail_seller(company_lot)
-        return f"Executed wining scenario ETA was: {self.request.eta} and lot end time was: {company_lot.date_end.isoformat()}"
+        return f"\nExecuted wining scenario ETA was: {self.request.eta} \nand lot end time was:             {company_lot.date_end.astimezone(timezone(settings.TIME_ZONE)).isoformat()}"
     except CompanyLot.DoesNotExist as e:
         return "Лот не знайдено: " + e
