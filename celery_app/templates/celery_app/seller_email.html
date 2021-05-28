@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Назва лоту:</th>
+        <td>{{lot.name}}</td>
+    </tr>
+    <tr>
+        <th>Опис лоту:</th>
+        <td>{{lot.description|truncatechars:"200"}}</td>
+    </tr>
+    <tr>
+        <th>Ціна:</th>
+        <td>{{lot.current_price}}</td>
+    </tr>
+    <tr>
+        <th>Завершився:</th>
+        <td>{{lot.date_end}}</td>
+    </tr>
+    <tr>
+        <th>Сторінка:</th>
+        <td>{{ domain }}{{ lot.get_absolute_url }}</td>
+    </tr>
+</table>
+<br>
+<p>Контактні дані покупця</p>
+<table>
+    <tr>
+        <th>Ім'я:</th>
+        <td>{{winner.name}}</td>
+    </tr>
+    <tr>
+        <th>Телефон:</th>
+        <td>{{winner.phone}}</td>
+    </tr>
+    <tr>
+        <th>Пошта:</th>
+        <td>{{winner.user.email}}</td>
+    </tr>
+    <tr>
+        <th>Унікальний ідентифікатор:</th>
+        <td>{{winner.user.id}}</td>
+    </tr>
+</table>
+</body>
+</html>

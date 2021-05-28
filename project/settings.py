@@ -43,14 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'multiselectfield',
-    'django_cleanup',
+    'django_cleanup.apps.CleanupConfig',
     'widget_tweaks',
     'django_extensions',
     'django_celery_beat',
     'django_celery_results',
     #
-    'website',
-    'celery_app',
+    'website.apps.WebsiteConfig',
+    'celery_app.apps.CeleryAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -181,4 +181,5 @@ DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
 # CELERY_ACCEPT_CONTENT = ['json']
 # CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'django-db'
-CELERY_TIMEZONE = 'Europe/Kiev'
+# CELERY_TIMEZONE = 'Europe/Kiev'
+CELERY_ENABLE_UTC = True

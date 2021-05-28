@@ -5,7 +5,7 @@
             <div class="img-deals card col-md-8 offset-md-1" style="border:none;">
                 <img src="{{lot.first_image.photo.url}}" class="img-fluid" alt="">
                 <div class="row">
-                    <h4 class="editContent col-md">{{ lot.name }}</h4>
+                    <h4 class="editContent col-md">{{ lot.name|truncatechars:"30" }}</h4>
                     <div class="col-md my-auto">
                         <table>
                             <tr style="font-size:20px;">
